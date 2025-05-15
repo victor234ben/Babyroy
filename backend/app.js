@@ -47,9 +47,6 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
-});
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -66,5 +63,10 @@ app.get('/status', (req, res) => {
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
+});
+
 
 module.exports = app;
