@@ -45,9 +45,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// For all other routes, serve React's index.html
+app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
+
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
 });
 
 // API routes
