@@ -14,60 +14,12 @@ mongoose.connect(mongoURI, {
 
 // Create demo tasks
 const demoTasks = [
-  {
-    title: "Join Telegram Group",
-    description: "Join our official Telegram group to stay updated.",
-    type: "one-time",
-    category: "social",
-    pointsReward: 1000,
-    requirements: "Click the link and join the group.",
-    verificationMethod: "link-visit",
-    verificationData: "https://youtube.com/@BabyRoymeme",
-    taskType: "ingame",
-    isActive: true,
-  },
-  {
-    title: "Join Telegram Group",
-    description: "Join our official Telegram group to stay updated.",
-    type: "one-time",
-    category: "social",
-    pointsReward: 1000,
-    requirements: "Click the link and join the group.",
-    verificationMethod: "link-visit",
-    verificationData: "https://youtube.com/@BabyRoymeme",
-    taskType: "ingame",
-    isActive: true,
-  },
-  {
-    title: "Visit Partner Website",
-    description: "Check out our partner’s website.",
-    type: "daily",
-    category: "engagement",
-    pointsReward: 20,
-    requirements: "Click the link and view the website.",
-    verificationMethod: "link-visit",
-    verificationData: "https://partnerwebsite.com",
-    taskType: "partners",
-    isActive: true,
-  },
-  {
-    title: "Visit Blog Article",
-    description: "Read our latest blog article.",
-    type: "one-time",
-    category: "content",
-    pointsReward: 30,
-    requirements: "Click the link and view the blog post.",
-    verificationMethod: "link-visit",
-    verificationData: "https://yourdomain.com/blog/article",
-    taskType: "ingame",
-    isActive: true,
-  },
-  {
+   {
     title: "Daily Login",
     description: "Log in daily to earn rewards.",
     type: "daily",
     category: "engagement",
-    pointsReward: 10,
+    pointsReward: 500,
     requirements: "Login to your account.",
     verificationMethod: "auto",
     verificationData: "",
@@ -75,11 +27,60 @@ const demoTasks = [
     isActive: true,
   },
   {
+    title: "Join Telegram Group",
+    description: "Join our official Telegram group to stay updated.",
+    type: "one-time",
+    category: "social",
+    pointsReward: 1000,
+    requirements: "Click the link and join the group.",
+    verificationMethod: "link-visit",
+    verificationData: "https://t.me/BabyRoyarmy",
+    taskType: "ingame",
+    isActive: true,
+  },
+    {
+    title: "Follow Youtube Channel",
+    description: "Join our official Youtube Channel to stay updated.",
+    type: "one-time",
+    category: "social",
+    pointsReward: 2000,
+    requirements: "Click the link and join the group.",
+    verificationMethod: "link-visit",
+    verificationData: "https://youtube.com/@BabyRoymeme",
+    taskType: "ingame",
+    isActive: true,
+  },
+   {
+    title: "Follow Twitter",
+    description: "Join our official TwitterAccount to stay updated.",
+    type: "one-time",
+    category: "social",
+    pointsReward: 2000,
+    requirements: "Click the link and join the group.",
+    verificationMethod: "link-visit",
+    verificationData: "https://x.com/BabyRoymeme",
+    taskType: "ingame",
+    isActive: true,
+  },
+  {
+    title: "Tweet about BabyRoy",
+    description: "",
+    type: "one-time",
+    category: "social",
+    pointsReward: 1000,
+    requirements: "Click and tweet",
+    verificationMethod: "link-visit",
+    verificationData: "https://x.com/BabyRoymeme",
+    taskType: "ingame",
+    isActive: true,
+  },
+  
+  {
     title: "Complete Onboarding",
     description: "Complete the onboarding steps after signing up.",
     type: "one-time",
     category: "learn",
-    pointsReward: 100,
+    pointsReward: 2000,
     requirements: "Finish all onboarding steps.",
     verificationMethod: "auto",
     verificationData: "",
@@ -108,7 +109,7 @@ const deleteDemoTasks = async (req, res) => {
   }
 }
 // Run the function
-// addDemoTasks();
+addDemoTasks();
 
-deleteDemoTasks()
+// deleteDemoTasks()
 

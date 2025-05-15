@@ -54,7 +54,7 @@ const DashboardPage = () => {
             </div>
           </button> */}
 
-          {/* PAWS Balance */}
+          {/* BabyRoy Balance */}
           <div className="flex flex-col items-center mt-8">
             <div className="flex items-center gap-1 text-center mt-[150px]">
               <CardContent className=" p-0 flex items-center justify-center opacity-85 bg-[#041c31] w-[350px] h-[80px] rounded-xl">

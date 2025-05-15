@@ -10,7 +10,6 @@ const taskSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Please add a description'],
     },
     type: {
       type: String,
@@ -29,7 +28,6 @@ const taskSchema = new mongoose.Schema(
     },
     requirements: {
       type: String,
-      required: [true, 'Please specify task requirements'],
     },
     verificationMethod: {
       type: String,

@@ -17,6 +17,7 @@ const path = require('path');
 
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
@@ -61,6 +62,7 @@ app.get('/status', (req, res) => {
 app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
 app.get('*', (req, res) => {
+  console.log('✅ Frontend resolved for path:', req.originalUrl);
   res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
 });
 

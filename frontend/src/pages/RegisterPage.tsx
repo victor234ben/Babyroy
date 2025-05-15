@@ -66,7 +66,7 @@ const RegisterPage = () => {
             <PawPrint className="h-8 w-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">Create an Account</CardTitle>
-          <CardDescription>Join the PAWS community today</CardDescription>
+          <CardDescription>Join the BabyRoy community today</CardDescription>
         </CardHeader>
         
         <CardContent>

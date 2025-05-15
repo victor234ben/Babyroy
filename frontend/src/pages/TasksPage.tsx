@@ -220,15 +220,6 @@ const TasksPage = () => {
           </Tabs>
         </div>
       </div>
-
-         <div className="pt-8">
-                <h1 className="text-3xl font-bold mb-2">TASKS</h1>
-                <div>
-                    <span className="text-xl font-semibold">GET REWARDS </span>
-                    <span className="text-xl text-gray-500">FOR</span>
-                </div>
-                <div className="text-xl text-gray-500">COMPLETING QUESTS</div>
-            </div>
     </AppLayout>
   );
 };
@@ -281,7 +272,7 @@ const TaskList = ({
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
           <Package className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium">No tasks found</h3>
+        <h3 className="text-lg text-white font-medium">No tasks found</h3>
         <p className="text-muted-foreground mt-2">
           No tasks match your search criteria.
         </p>

@@ -6,16 +6,14 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Share, Copy, CheckCircle2, Loader, User, Share2 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Share, Copy, CheckCircle2} from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import { tokenIcon } from "@/images";
+import { Separator } from "@radix-ui/react-context-menu";
 
 const ReferralsPage = () => {
   const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
@@ -68,12 +66,12 @@ const ReferralsPage = () => {
   const handleShareCode = () => {
     if (!referralInfo?.referralCode) return;
 
-    const shareText = `Join me on PAWS and earn rewards! Use my referral code: ${referralInfo.referralCode}`;
+    const shareText = `Join me on BabyRoy and earn rewards! Use my referral code: ${referralInfo.referralCode}`;
 
     if (navigator.share) {
       navigator
         .share({
-          title: "PAWS Referral",
+          title: "BabyRoy Referral",
           text: shareText,
           url: window.location.origin,
         })
@@ -151,11 +149,13 @@ const ReferralsPage = () => {
 
           {/* referral list */}
           <div className="space-y-4">
-            <h2 className="text-xl text-white font-bold">Your Referrals</h2>
+            <h2 className="text-xl text-white font-bold mb-4">
+              Your Referrals
+            </h2>
           </div>
           <div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="pt-2">
                 {loading ? (
                   <div className="space-y-4">
                     {Array(3)
@@ -221,121 +221,21 @@ const ReferralsPage = () => {
             </Card>
           </div>
 
-          {/* Fixed Invite Button */}
-          <div className="fixed bottom-[50px] left-0 right-0 py-4 flex justify-center">
+          <div className="item-center flex justify-center">
             <div className="w-full max-w-md px-4">
-              <button className="w-full bg-[#041c31] text-white py-4 rounded-xl text-lg font-medium">
+              <button
+                onClick={handleShareCode}
+                className="w-full bg-[#041c31] text-white py-4 rounded-xl text-lg font-medium"
+              >
                 Invite
               </button>
             </div>
           </div>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Referral Code Card */}
-          <Card className="paw-gradient-bg text-white">
-            {/* <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-white">Your Referral Code</CardTitle>
-                <Share className="h-5 w-5" />
-              </div>
-            </CardHeader> */}
-            {/* <CardContent className="space-y-6">
-              {loading ? (
-                <Skeleton className="h-12 w-full bg-white/20" />
-              ) : (
-                <>
-                  <div className="bg-white/10 p-4 rounded-lg flex items-center justify-between">
-                    <div className="font-mono text-xl font-bold tracking-wider">
-                      {referralInfo?.referralCode || "LOADING"}
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={handleCopyCode}
-                      className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30"
-                    >
-                      {copied ? (
-                        <CheckCircle2 className="h-4 w-4" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button
-                      className="bg-white/20 hover:bg-white/30 text-white border-0"
-                      onClick={handleCopyCode}
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Copy Code
-                    </Button>
-                    <Button
-                      className="bg-white/20 hover:bg-white/30 text-white border-0"
-                      onClick={handleShareCode}
-                    >
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
-                    </Button>
-                  </div>
-                </>
-              )}
-            </CardContent> */}
-          </Card>
-
-          {/* Stats Card */}
-          {/* <Card>
-            <CardHeader>
-              <CardTitle>Referral Statistics</CardTitle>
-              <CardDescription>
-                Track the status of your referrals
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-4">
-                  <Skeleton className="h-8 w-24" />
-                  <Skeleton className="h-8 w-full" />
-                  <Skeleton className="h-8 w-3/4" />
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold">
-                      {referralInfo?.totalReferrals || 0}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Total Referrals
-                    </div>
-                  </div>
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold">
-                      {referralInfo?.activeReferrals || 0}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Active Referrals
-                    </div>
-                  </div>
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold">
-                      {referralInfo?.pointsEarned || 0}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Points Earned
-                    </div>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card> */}
         </div>
       </div>
     </AppLayout>
   );
 };
 
-import { Trophy } from "lucide-react";
-import { tokenIcon } from "@/images";
 
 export default ReferralsPage;

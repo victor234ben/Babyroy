@@ -1,8 +1,7 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Home, Package, Trophy, Share, User, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { babyRoyBg } from "@/images";
 import Friends from "@/icons/Friends";
 
 interface AppLayoutProps {
@@ -12,6 +11,7 @@ type MenuItem = {
   id: number;
   title: string;
   path: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.ComponentType<any>;
 };
 
@@ -89,6 +89,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             })}
           </div>
         </div>
+
+        <div  className={`${
+          pathname === "/referrals" ? "bg-[#041c31]" : "bg-[]"
+        } fixed bottom-0 w-full max-w-md h-[40px]`}></div>
       </div>
     </div>
   );

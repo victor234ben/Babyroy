@@ -57,7 +57,7 @@ const LoginPage = () => {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-paws-primary">
             <PawPrint className="h-8 w-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome to PAWS</CardTitle>
+          <CardTitle className="text-2xl font-bold">Welcome to BabyRoy</CardTitle>
           <CardDescription>Enter your credentials to sign in</CardDescription>
         </CardHeader>
         
