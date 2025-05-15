@@ -21,7 +21,7 @@ const app = express();
 app.use(helmet());
 app.use(cookieParser())
 app.use(cors({
-  origin: "http://localhost:8080",
+  origin: ["http://localhost:8080", "https://babyroy.onrender.com/"],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
@@ -33,6 +33,11 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later'
 });
 app.use('/api', limiter);
+
+// For all other routes, serve React's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+});
 
 // Body parsing middleware
 app.use(express.json());
@@ -51,7 +56,7 @@ app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check route
-app.get('/', (req, res) => {
+app.get('/status', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 

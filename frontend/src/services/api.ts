@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-const API_URL = "http://localhost:5000/api"; // Change this to your actual API URL
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:5000/api"; 
 
 export type LoginCredentials = {
   email: string;
