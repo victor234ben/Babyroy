@@ -1,0 +1,148 @@
+
+const User = require('../models/userModel.js');
+const generateToken = require('../utils/generateToken');
+const generateReferralCode = require('../utils/referralCodeGenerator');
+
+// @desc    Register a new user
+// @route   POST /api/auth/register
+// @access  Public
+const registerUser = async (req, res) => {
+  try {
+    const { name, email, password, referralCode } = req.body;
+
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists with this email',
+      });
+    }
+
+    // Find referrer if referral code provided
+    let referredBy = null;
+
+    if (referralCode) {
+      const referrer = await User.findOne({ referralCode });
+      if (referrer) {
+        referredBy = referrer._id;
+      } else {
+        referredBy = ""
+      }
+    }
+
+    // Create new user
+    const user = await User.create({
+      name,
+      email,
+      password,
+      referralCode: generateReferralCode(),
+      referredBy,
+    });
+
+    if (user) {
+      // If a valid referral was used, reward the referrer
+      // if (referredBy) {
+      //   await processReferralReward(referredBy);
+      // }
+
+      generateToken(user._id, res)
+
+      res.status(201).json({
+        success: true,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          referralCode: user.referralCode,
+          points: user.points,
+        },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid user data',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Auth user & get token
+// @route   POST /api/auth/login
+// @access  Public
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email }).select('+password');
+
+    // Check user exists and password matches
+    if (user && (await user.matchPassword(password))) {
+      generateToken(user._id, res)
+      res.status(200).json({
+        success: true,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          referralCode: user.referralCode,
+          points: user.points,
+        },
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Helper function to process referral rewards
+const processReferralReward = async (referrerId) => {
+  try {
+    const referrerUser = await User.findById(referrerId);
+    if (referrerUser) {
+      // Award referral bonus points
+      const bonusAmount = Number(process.env.REFERRAL_BONUS_AMOUNT) || 50;
+
+      referrerUser.points += bonusAmount;
+      referrerUser.totalEarned += bonusAmount;
+      await referrerUser.save();
+
+      // Create a record of the reward
+      const Reward = require('../models/rewardModel');
+      await Reward.create({
+        user: referrerId,
+        amount: bonusAmount,
+        type: 'referral',
+        description: 'Referral bonus',
+      });
+    }
+  } catch (error) {
+    console.error('Error processing referral reward:', error);
+  }
+};
+
+
+const validateUser = (req, res) => {
+  const user = req.user
+  res.json({ user })
+}
+
+
+module.exports = { registerUser, loginUser, validateUser };
