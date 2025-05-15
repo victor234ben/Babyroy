@@ -45,9 +45,6 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
-
-
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -63,6 +60,8 @@ app.get('/status', (req, res) => {
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
+
+app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
