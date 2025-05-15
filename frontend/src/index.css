@@ -85,7 +85,7 @@
   }
 }
 .special_background {
-  background-image: url(https://res.cloudinary.com/dtcbirvxc/image/upload/v1747315899/gdhycygozkdgj5nqact1.jpg);
+  background-image: url('/babyRoyBg.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
