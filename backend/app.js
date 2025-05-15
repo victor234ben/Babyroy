@@ -57,14 +57,15 @@ app.get('/status', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
-// Error handling middleware
-app.use(notFound);
-app.use(errorHandler);
 
 app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
 });
+
+// Error handling middleware
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = app;
