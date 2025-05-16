@@ -51,7 +51,7 @@ bot.onText(/\/start/, (msg) => {
           {
             text: 'Open BabyRoy Mini App',
             web_app: {
-              url: 'https://babyroy.onrender.com/tasks', 
+              url: 'https://babyroy.onrender.com/', 
             },
           },
         ],
