@@ -21,7 +21,23 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Security middleware
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        'https://telegram.org',
+        'https://cdn.gpteng.co', // allow GPT Engineer script if needed
+        "'unsafe-inline'",       // Optional: allow inline scripts if you're using any
+      ],
+      connectSrc: ["'self'", 'https://api.telegram.org'],
+      frameSrc: ["'self'", 'https://t.me'], // allow Telegram if embedding
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
 app.use(cookieParser())
 app.use(cors({
   origin: ["http://localhost:8080", "https://babyroy.onrender.com/"],
@@ -85,6 +101,14 @@ app.post('/telegram-webhook', (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
+app.post('/api/telegram-connected', (req, res) => {
+  const { user, connectedAt } = req.body;
+  console.log('📲 Telegram Mini App connected!');
+  console.log('User info:', user);
+  console.log('Time:', connectedAt);
+
+  res.json({ status: 'received' });
+})
 
 
 // Health check route

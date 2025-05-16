@@ -16,6 +16,7 @@ declare global {
         expand(): void;
         close(): void;
         sendData(data: string): void;
+        ready(): void;
         // You can extend this further based on the Telegram WebApp API
       };
     };
