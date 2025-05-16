@@ -65,47 +65,108 @@ const TasksPage = () => {
   const handleTaskClick = async (
     taskId: string,
     userStatus: string,
-    verificationData: string
+    verificationData: string,
+    verificationMethod: string,
+    action: string
   ) => {
     try {
       if (userStatus === "available") {
-        window.open(verificationData, "_blank");
+        //automatic tasks processing
+        if (verificationMethod === "auto") {
+          setProcessing(taskId);
+          await new Promise((resolve) => setTimeout(resolve, 4000));
+          try {
+            const res = await taskAPI.getTaskById(taskId);
+            const updatedTask = res.task;
 
-        setProcessing(taskId);
+            const updatedTasks = tasks.map((task) =>
+              task._id === updatedTask._id ? updatedTask : task
+            );
 
-        let userLeft = false;
-
-        const onVisibilityChange = async () => {
-          if (document.visibilityState === "hidden") {
-            userLeft = true;
+            setTasks(updatedTasks);
+          } catch (error) {
+            console.error("Error fetching task:", error);
+          } finally {
+            setProcessing(null);
           }
+        } else if (verificationMethod === "link-visit") {
+          window.open(verificationData, "_blank");
 
-          if (document.visibilityState === "visible" && userLeft) {
-            await new Promise((resolve) => setTimeout(resolve, 4000));
+          setProcessing(taskId);
+          let userLeft = false;
 
-            try {
-              const res = await taskAPI.getTaskById(taskId);
-              const updatedTask = res.task;
-
-              const updatedTasks = tasks.map((task) =>
-                task._id === updatedTask._id ? updatedTask : task
-              );
-
-              setTasks(updatedTasks);
-            } catch (error) {
-              console.error("Error fetching task:", error);
-            } finally {
-              setProcessing(null);
-              document.removeEventListener(
-                "visibilitychange",
-                onVisibilityChange
-              );
+          const onVisibilityChange = async () => {
+            if (document.visibilityState === "hidden") {
+              userLeft = true;
             }
-          }
-        };
 
-        // Start listening for visibility changes
-        document.addEventListener("visibilitychange", onVisibilityChange);
+            if (document.visibilityState === "visible" && userLeft) {
+              await new Promise((resolve) => setTimeout(resolve, 4000));
+
+              try {
+                const res = await taskAPI.getTaskById(taskId);
+                const updatedTask = res.task;
+
+                const updatedTasks = tasks.map((task) =>
+                  task._id === updatedTask._id ? updatedTask : task
+                );
+
+                setTasks(updatedTasks);
+              } catch (error) {
+                console.error("Error fetching task:", error);
+              } finally {
+                setProcessing(null);
+                document.removeEventListener(
+                  "visibilitychange",
+                  onVisibilityChange
+                );
+              }
+            }
+          };
+
+          // Start listening for visibility changes
+          document.addEventListener("visibilitychange", onVisibilityChange);
+        } else if (verificationMethod === "action") {
+          window.open(verificationData, "_blank");
+
+          setProcessing(taskId);
+          let userLeft = false;
+
+          const onVisibilityChange = async () => {
+            if (document.visibilityState === "hidden") {
+              userLeft = true;
+            }
+
+            if (document.visibilityState === "visible" && userLeft) {
+              await new Promise((resolve) => setTimeout(resolve, 4000));
+
+              try {
+                const data = await taskAPI.verifyTask(taskId, action);
+
+                const updatedTask = data.task;
+
+                const updatedTasks = tasks.map((task) =>
+                  task._id === updatedTask._id ? updatedTask : task
+                );
+
+                setTasks(updatedTasks);
+              } catch (error) {
+                console.error("Error fetching task:", error);
+              } finally {
+                setProcessing(null);
+                document.removeEventListener(
+                  "visibilitychange",
+                  onVisibilityChange
+                );
+              }
+            }
+          };
+
+          // Start listening for visibility changes
+          document.addEventListener("visibilitychange", onVisibilityChange);
+        } else {
+          return null;
+        }
       } else if (userStatus === "pending") {
         const res = await taskAPI.completeTask(taskId);
         const newStatus = res.taskCompletion?.status || "pending";
@@ -151,15 +212,16 @@ const TasksPage = () => {
   return (
     <AppLayout>
       <div className="p-6 space-y-6">
-      
-           <div className="">
-                <h1 className="text-3xl font-bold mb-2 text-white">TASKS</h1>
-                <div>
-                    <span className="text-xl font-semibold text-white">GET REWARDS </span>
-                    <span className="text-xl text-gray-300">FOR</span>
-                </div>
-                <div className="text-xl text-gray-300">COMPLETING QUESTS</div>
-            </div>
+        <div className="">
+          <h1 className="text-3xl font-bold mb-2 text-white">TASKS</h1>
+          <div>
+            <span className="text-xl font-semibold text-white">
+              GET REWARDS{" "}
+            </span>
+            <span className="text-xl text-gray-300">FOR</span>
+          </div>
+          <div className="text-xl text-gray-300">COMPLETING QUESTS</div>
+        </div>
 
         <div className="flex flex-col gap-4">
           {/* Search and filter */}
@@ -231,7 +293,9 @@ type TaskListProps = {
   onTaskClick: (
     id: string,
     userStatus: string,
-    verificationData: string
+    verificationData: string,
+    verificationMethod: string,
+    action: string
   ) => void;
 };
 
@@ -318,7 +382,9 @@ const TaskList = ({
                     onTaskClick(
                       task._id,
                       task.userStatus,
-                      task.verificationData
+                      task.verificationData,
+                      task.verificationMethod,
+                      task.action
                     )
                   }
                 >

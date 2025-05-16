@@ -15,6 +15,7 @@ import ReferralsPage from "./pages/ReferralsPage";
 // import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
+import TelegramLogin from "./pages/TelegramLogin";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/telegramLogin" element={<TelegramLogin />} />
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Protected Routes */}

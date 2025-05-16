@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:5000/api"; 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export type LoginCredentials = {
   email: string;
@@ -37,8 +37,8 @@ export type Task = {
   taskType: "ingame" | "partners";
   status: "pending" | "approved" | "rejected";
   userStatus: "pending" | "approved" | "rejected" | "available";
-  type: "social" | "content" | "engagement" | "learning";
-  difficulty: "easy" | "medium" | "hard";
+  type: "one-time" | "daily" | "socaial";
+  action: string;
   completedAt?: string;
   deadline?: string;
 };
@@ -130,6 +130,21 @@ export const authAPI = {
     window.location.href = "/login";
   },
 
+  telegramOauth: async (userData) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/telegramOauth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+        credentials: "include",
+      });
+
+      return await handleResponse(response);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   validateToken: async () => {
     try {
       const response = await fetch(`${API_URL}/auth/validate`, {
@@ -219,8 +234,25 @@ export const taskAPI = {
       throw error;
     }
   },
-};
 
+  verifyTask: async (taskId: string, verificationData: string) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/tasks/verify/${verificationData}`,
+        {
+          method: "POST",
+          body: JSON.stringify(taskId),
+          ...authHeader(),
+          credentials: "include",
+        }
+      );
+
+      return await handleResponse(response);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+};
 
 // Referral APIs
 export const referralAPI = {

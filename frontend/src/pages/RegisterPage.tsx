@@ -59,8 +59,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-paws-primary/20 to-paws-accent/20 p-4">
-      <Card className="w-full max-w-md shadow-xl animate-fade-in">
+    <div className="flex min-h-screen py-4 items-center justify-center bg-gradient-to-br from-paws-primary/20 to-paws-accent/20 p-4">
+      <Card className="w-full max-w-md py-2 shadow-xl animate-fade-in">
         <CardHeader className="space-y-2 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-paws-primary">
             <PawPrint className="h-8 w-8 text-white" />

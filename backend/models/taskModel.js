@@ -29,9 +29,13 @@ const taskSchema = new mongoose.Schema(
     requirements: {
       type: String,
     },
+    action: {
+      type: String,
+      default: "",
+    },
     verificationMethod: {
       type: String,
-      enum: [ 'auto', 'link-visit'],
+      enum: ['auto', 'link-visit', "action"],
       default: 'auto',
     },
     verificationData: {
@@ -48,7 +52,7 @@ const taskSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["available", "pendingClaim"],
+      enum: ["available", "pending"],
       defaullt: "available"
     },
     expiresAt: {

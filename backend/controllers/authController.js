@@ -112,31 +112,40 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Helper function to process referral rewards
-const processReferralReward = async (referrerId) => {
-  try {
-    const referrerUser = await User.findById(referrerId);
-    if (referrerUser) {
-      // Award referral bonus points
-      const bonusAmount = Number(process.env.REFERRAL_BONUS_AMOUNT) || 50;
+const telegramLoginAndSignup = async (req, res) => {
+  const { telegramId, name, username } = req.body;
 
-      referrerUser.points += bonusAmount;
-      referrerUser.totalEarned += bonusAmount;
-      await referrerUser.save();
+  console.log(telegramId, name, username)
 
-      // Create a record of the reward
-      const Reward = require('../models/rewardModel');
-      await Reward.create({
-        user: referrerId,
-        amount: bonusAmount,
-        type: 'referral',
-        description: 'Referral bonus',
-      });
-    }
-  } catch (error) {
-    console.error('Error processing referral reward:', error);
+  // Check if user already exists
+  let user = await User.findOne({ telegramId });
+
+  if (!user) {
+    // Register new user
+    user = new User({
+      telegramId: telegramId,
+      name: name,
+      username: username,
+    });
+    await user.save();
   }
-};
+
+  generateToken(user._id, res)
+  res.status(201).json({
+    success: true,
+    user: {
+      _id: user._id,
+      name: user.name,
+      telegramId: user.telegramId,
+      referralCode: user.referralCode,
+      points: user.points,
+      username: username
+    },
+  });
+
+}
+
+
 
 
 const validateUser = (req, res) => {
@@ -145,4 +154,4 @@ const validateUser = (req, res) => {
 }
 
 
-module.exports = { registerUser, loginUser, validateUser };
+module.exports = { registerUser, loginUser, validateUser, telegramLoginAndSignup };

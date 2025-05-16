@@ -14,7 +14,7 @@ mongoose.connect(mongoURI, {
 
 // Create demo tasks
 const demoTasks = [
-   {
+  {
     title: "Daily Login",
     description: "Log in daily to earn rewards.",
     type: "daily",
@@ -27,18 +27,32 @@ const demoTasks = [
     isActive: true,
   },
   {
+    title: "Connect Wallet",
+    description: "Conect ton wallet.",
+    type: "one-time",
+    category: "engagement",
+    pointsReward: 500,
+    requirements: "Connect wallet",
+    verificationMethod: "action",
+    action: "connect",
+    verificationData: "",
+    taskType: "ingame",
+    isActive: true,
+  },
+  {
     title: "Join Telegram Group",
     description: "Join our official Telegram group to stay updated.",
     type: "one-time",
     category: "social",
     pointsReward: 1000,
     requirements: "Click the link and join the group.",
-    verificationMethod: "link-visit",
+    verificationMethod: "action",
     verificationData: "https://t.me/BabyRoyarmy",
+    action: "telegram",
     taskType: "ingame",
     isActive: true,
   },
-    {
+  {
     title: "Follow Youtube Channel",
     description: "Join our official Youtube Channel to stay updated.",
     type: "one-time",
@@ -50,7 +64,7 @@ const demoTasks = [
     taskType: "ingame",
     isActive: true,
   },
-   {
+  {
     title: "Follow Twitter",
     description: "Join our official TwitterAccount to stay updated.",
     type: "one-time",
@@ -74,7 +88,7 @@ const demoTasks = [
     taskType: "ingame",
     isActive: true,
   },
-  
+
   {
     title: "Complete Onboarding",
     description: "Complete the onboarding steps after signing up.",

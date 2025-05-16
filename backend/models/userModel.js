@@ -12,16 +12,18 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Please provide an email'],
-      unique: true,
+      // required: [true, 'Please provide an email'],
       lowercase: true,
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
     password: {
       type: String,
-      required: [true, 'Please provide a password'],
+      // required: [true, 'Please provide a password'],
       minlength: 8,
       select: false,
+    },
+    username: {
+      type: String,
     },
     telegramId: {
       type: String,
