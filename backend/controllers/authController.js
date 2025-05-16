@@ -113,9 +113,9 @@ const loginUser = async (req, res) => {
 };
 
 const telegramLoginAndSignup = async (req, res) => {
-  const { telegramId, name, username } = req.body;
+  const { telegramId, first_name, last_name } = req.body;
 
-  console.log(telegramId, name, username)
+  console.log("user telegram id", telegramId, "user first name", first_name, "userlastname", last_name)
 
   // Check if user already exists
   let user = await User.findOne({ telegramId });
@@ -124,8 +124,8 @@ const telegramLoginAndSignup = async (req, res) => {
     // Register new user
     user = new User({
       telegramId: telegramId,
-      name: name,
-      username: username,
+      first_name: first_name,
+      last_name: last_name
     });
     await user.save();
   }
@@ -135,11 +135,10 @@ const telegramLoginAndSignup = async (req, res) => {
     success: true,
     user: {
       _id: user._id,
-      name: user.name,
+      first_name: user.first_name,
       telegramId: user.telegramId,
       referralCode: user.referralCode,
       points: user.points,
-      username: username
     },
   });
 

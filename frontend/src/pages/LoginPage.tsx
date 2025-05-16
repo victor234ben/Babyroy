@@ -53,12 +53,10 @@ const LoginPage = () => {
         try {
           setIsLoading(true);
           const telegramId = tgUser.id;
-          const firstName = tgUser.first_name || "";
-          const lastName = tgUser.last_name || "";
-          const username = tgUser.username || "";
-          const fullName = `${firstName} ${lastName}`.trim();
+          const first_name = tgUser.first_name || "";
+          const last_name = tgUser.last_name || "";
 
-          await telegramOauth(telegramId, fullName, username);
+          await telegramOauth(telegramId, first_name, last_name);
           navigate(from, { replace: true });
         } catch (error) {
           console.error("Telegram OAuth failed:", error);
