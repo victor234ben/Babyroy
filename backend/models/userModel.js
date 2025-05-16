@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
+    password: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
     telegramId: {
       type: String,
       unique: true,
