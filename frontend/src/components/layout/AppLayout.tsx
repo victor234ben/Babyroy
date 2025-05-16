@@ -36,29 +36,20 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   console.log(pathname);
 
   return (
-    <div className="flex min-h-screen w-full max-w-md mx-auto">
+    <div className="flex min-h-screen w-full md:max-w-[600px] lg:max-w-md mx-auto">
       <div
         className={`${
           pathname === "/" ? "special_background" : "bg-[#041c31]"
-        } relative max-w-md mx-auto flex flex-col items-center flex-1`}
+        } relative w-full md:max-w-[600px] lg:max-w-md mx-auto flex flex-col items-center flex-1`}
       >
-        {/* <div className="flex flex-nowrap justify-center w-full bg-black z-10">
-          <div className="fixed top-0 w-full max-w-md px-4 py-3 bg-[#151516] cursor-pointer">
-            <div className="flex justify-between items-center pl-2 border-l-[2px] border-[#041c31]">
-              <div className="text-base text-white font-medium">
-                Check the footprint map
-              </div>
-              <button className="bg-[#041c31] rounded-full px-2 py-1">
-                <ArrowRight className="w-8 h-5 stroke-white" />
-              </button>
-            </div>
-          </div>
-        </div> */}
+       
         {/* Main content */}
-        <main className="w-full max-w-md flex-1 ">{children}</main>
+        <main className=" w-full flex-1 ">
+          {children}
+        </main>
 
         {/* Bottom nav */}
-        <div className="w-full max-w-md fixed bottom-10 bg-[#041c31] opacity-85 ">
+        <div className=" w-full md:max-w-[600px] lg:max-w-md fixed bottom-10 bg-[#041c31] opacity-85 ">
           <div className="flex justify-between border px-4 py-4 w-[90%] border-gray-4 rounded-2xl 00 mx-auto">
             {mainMenuItems.map((item) => {
               const isActive = item.path === pathname;
@@ -90,9 +81,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        <div  className={`${
-          pathname === "/referrals" ? "bg-[#041c31]" : "bg-[]"
-        } fixed bottom-0 w-full max-w-md h-[40px]`}></div>
+        <div
+          className={`${
+            pathname === "/referrals" ? "bg-[#041c31]" : "bg-[]"
+          } fixed bottom-0 w-full max-w-md h-[40px]`}
+        ></div>
       </div>
     </div>
   );

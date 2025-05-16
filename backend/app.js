@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const TelegramBot = require('node-telegram-bot-api');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 // Route imports
@@ -15,7 +16,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-
+const token = process.env.TELEGRAMTOKEN;
 const app = express();
 app.set('trust proxy', 1);
 
@@ -35,6 +36,33 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later'
 });
 app.use('/api', limiter);
+
+const bot = new TelegramBot(token, { polling: true });
+
+// 📩 Listen for '/start' command
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+
+  // 👇 Send message with Web App button
+  bot.sendMessage(chatId, 'Welcome! Tap below to launch the mini app:', {
+    reply_markup: {
+      keyboard: [
+        [
+          {
+            text: 'Open BabyRoy Mini App',
+            web_app: {
+              url: 'https://babyroy.onrender.com/tasks', 
+            },
+          },
+        ],
+      ],
+      resize_keyboard: true,
+      one_time_keyboard: true,
+    },
+  });
+});
+
+bot.on("polling_error", console.error);
 
 
 // Body parsing middleware

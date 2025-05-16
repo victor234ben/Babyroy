@@ -69,6 +69,19 @@ const LoginPage = () => {
     authenticateTelegramUser();
   }, [tgUser, telegramOauth, from, navigate]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+      console.log("User:", tg.initDataUnsafe.user);
+    }
+  }, []);
+
+  const handleSend = () => {
+    window.Telegram?.WebApp?.sendData("Hello from TypeScript!");
+  };
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {

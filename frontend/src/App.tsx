@@ -17,9 +17,13 @@ import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import TelegramLogin from "./pages/TelegramLogin";
 
+import { useEffect } from "react";
+
 const queryClient = new QueryClient();
 
 const App = () => (
+
+  
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
