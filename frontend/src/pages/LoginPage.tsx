@@ -46,6 +46,45 @@ const LoginPage = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const from = (location.state as any)?.from || "/";
+ 
+  // const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+
+      tg.ready(); // ✅ This is valid
+      tg.expand();
+
+      // console.log("User:", tg.initDataUnsafe.user);
+
+      // const sendTelegramConnection = async () => {
+      //   try {
+      //     const res = await fetch(`${API_URL}/telegram-connected`, {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({
+      //         user: tg.initDataUnsafe.user,
+      //         connectedAt: new Date().toISOString(),
+      //       }),
+      //     });
+
+      //     if (res.ok) {
+      //       toast.success("Telegram connected successfully");
+      //     } else {
+      //       toast.error(`Telegram connection failed: ${res.status}`);
+      //     }
+      //   } catch (error) {
+      //     console.error("Telegram connection error:", error);
+      //     toast.error("Telegram connection error");
+      //   }
+      // };
+
+      // sendTelegramConnection();
+    }
+  }, []);
 
   useEffect(() => {
     const authenticateTelegramUser = async () => {
@@ -67,45 +106,6 @@ const LoginPage = () => {
 
     authenticateTelegramUser();
   }, [tgUser, telegramOauth, from, navigate]);
-
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-
-      tg.ready(); // ✅ This is valid
-      tg.expand();
-
-      console.log("User:", tg.initDataUnsafe.user);
-
-      const sendTelegramConnection = async () => {
-        try {
-          const res = await fetch(`${API_URL}/telegram-connected`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user: tg.initDataUnsafe.user,
-              connectedAt: new Date().toISOString(),
-            }),
-          });
-
-          if (res.ok) {
-            toast.success("Telegram connected successfully");
-          } else {
-            toast.error(`Telegram connection failed: ${res.status}`);
-          }
-        } catch (error) {
-          console.error("Telegram connection error:", error);
-          toast.error("Telegram connection error");
-        }
-      };
-
-      sendTelegramConnection();
-    }
-  }, [API_URL]);
 
   const handleSend = () => {
     window.Telegram?.WebApp?.sendData("Hello from TypeScript!");

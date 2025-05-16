@@ -101,6 +101,7 @@ app.post('/telegram-webhook', (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
+
 app.post('/api/telegram-connected', (req, res) => {
   const { user, connectedAt } = req.body;
   console.log('📲 Telegram Mini App connected!');

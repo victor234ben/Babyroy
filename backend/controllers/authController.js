@@ -115,22 +115,28 @@ const loginUser = async (req, res) => {
 const telegramLoginAndSignup = async (req, res) => {
   const { telegramId, first_name, last_name } = req.body;
 
-  console.log("user telegram id", telegramId, "user first name", first_name, "userlastname", last_name)
+  console.log("Telegram login attempt:", telegramId, first_name, last_name);
 
-  // Check if user already exists
-  let user = await User.findOne({ telegramId });
+  // Atomically find or insert user
+  const user = await User.findOneAndUpdate(
+    { telegramId },
+    {
+      $setOnInsert: {
+        first_name,
+        last_name,
+        telegramId,
+        referralCode: generateReferralCode(), // optional
+        points: 0 // default points if needed
+      }
+    },
+    {
+      new: true,      // return the document *after* update/insert
+      upsert: true,   // insert if not found
+    }
+  );
 
-  if (!user) {
-    // Register new user
-    user = new User({
-      telegramId: telegramId,
-      first_name: first_name,
-      last_name: last_name
-    });
-    await user.save();
-  }
+  generateToken(user._id, res);
 
-  generateToken(user._id, res)
   res.status(201).json({
     success: true,
     user: {
@@ -141,9 +147,7 @@ const telegramLoginAndSignup = async (req, res) => {
       points: user.points,
     },
   });
-
-}
-
+};
 
 
 
