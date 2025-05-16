@@ -37,8 +37,8 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-const bot = new TelegramBot(token, { polling: true });
-
+const bot = new TelegramBot(token);
+bot.setWebHook('https://yourdomain.com/telegram-webhook');
 // 📩 Listen for '/start' command
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -51,7 +51,7 @@ bot.onText(/\/start/, (msg) => {
           {
             text: 'Open BabyRoy Mini App',
             web_app: {
-              url: 'https://babyroy.onrender.com/', 
+              url: 'https://babyroy.onrender.com/',
             },
           },
         ],
@@ -80,6 +80,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
+
+app.post('/telegram-webhook', (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
 
 // Health check route
 app.get('/status', (req, res) => {
