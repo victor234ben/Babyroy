@@ -32,6 +32,8 @@ const verifyTelegram = async (req, res) => {
                 }
             );
 
+            console.log(telegramRes)
+
             userStatus = telegramRes?.data?.result?.status;
         } catch (telegramError) {
             console.error('Telegram API Error:', telegramError?.response?.data || telegramError.message);
