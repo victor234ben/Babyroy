@@ -29,11 +29,8 @@ const userMenuItems: MenuItem[] = [
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { logout, user } = useAuth();
 
   const { pathname } = location;
-
-  console.log(pathname);
 
   return (
     <div className="flex min-h-screen w-full md:max-w-[600px] lg:max-w-md mx-auto">
@@ -49,7 +46,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </main>
 
         {/* Bottom nav */}
-        <div className=" w-full md:max-w-[600px] lg:max-w-md fixed bottom-10 bg-[#041c31] opacity-85 ">
+        <div className=" w-full md:max-w-[600px] lg:max-w-md fixed bottom-2 bg-[#041c31] opacity-95 ">
           <div className="flex justify-between border px-4 py-4 w-[90%] border-gray-4 rounded-2xl 00 mx-auto">
             {mainMenuItems.map((item) => {
               const isActive = item.path === pathname;
@@ -63,8 +60,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     to={item.path}
                   >
                     <item.icon
-                      className={`w-5 h-5 ${
-                        isActive ? "text-[#4c9ce2]" : "text-[#727272]"
+                      className={`w-6 h-6 ${
+                        isActive ? "text-[#65a0d3]" : "text-[#727272]"
                       }`}
                     />
                     <span
@@ -80,12 +77,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             })}
           </div>
         </div>
-
-        <div
-          className={`${
-            pathname === "/referrals" ? "bg-[#041c31]" : "bg-[]"
-          } fixed bottom-0 w-full max-w-md h-[40px]`}
-        ></div>
       </div>
     </div>
   );

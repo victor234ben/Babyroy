@@ -13,6 +13,7 @@ const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const verifyRoutes = require('./routes/verityTaskRoutes')
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
@@ -96,6 +97,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', verifyRoutes)
 
 app.post('/telegram-webhook', (req, res) => {
   bot.processUpdate(req.body);

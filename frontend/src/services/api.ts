@@ -15,12 +15,15 @@ export type RegisterData = {
 };
 
 export type UserProfile = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  user: any;
   id: string;
   name: string;
   email: string;
   createdAt: string;
   avatarUrl?: string;
   bio?: string;
+  telegramId: string;
 };
 
 export type Task = {
@@ -235,13 +238,17 @@ export const taskAPI = {
     }
   },
 
-  verifyTask: async (taskId: string, verificationData: string) => {
+  verifyTask: async (
+    taskId: string,
+    verificationData: string,
+    telegramId: string
+  ) => {
     try {
       const response = await fetch(
         `${API_URL}/tasks/verify/${verificationData}`,
         {
           method: "POST",
-          body: JSON.stringify(taskId),
+          body: JSON.stringify({ taskId, telegramId }),
           ...authHeader(),
           credentials: "include",
         }

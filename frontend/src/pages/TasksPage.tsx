@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -67,7 +68,8 @@ const TasksPage = () => {
     userStatus: string,
     verificationData: string,
     verificationMethod: string,
-    action: string
+    action: string,
+    telegramId: string
   ) => {
     try {
       if (userStatus === "available") {
@@ -128,6 +130,7 @@ const TasksPage = () => {
           document.addEventListener("visibilitychange", onVisibilityChange);
         } else if (verificationMethod === "action") {
           window.open(verificationData, "_blank");
+          console.log("called");
 
           setProcessing(taskId);
           let userLeft = false;
@@ -141,7 +144,13 @@ const TasksPage = () => {
               await new Promise((resolve) => setTimeout(resolve, 4000));
 
               try {
-                const data = await taskAPI.verifyTask(taskId, action);
+                const data = await taskAPI.verifyTask(
+                  taskId,
+                  action,
+                  telegramId
+                );
+
+                console.log(telegramId);
 
                 const updatedTask = data.task;
 
@@ -295,7 +304,8 @@ type TaskListProps = {
     userStatus: string,
     verificationData: string,
     verificationMethod: string,
-    action: string
+    action: string,
+    telegramId: string
   ) => void;
 };
 
@@ -305,6 +315,8 @@ const TaskList = ({
   processing,
   onTaskClick,
 }: TaskListProps) => {
+  const { user } = useAuth();
+  const userTelegramId = user?.user.telegramId;
   if (loading) {
     return (
       <div className="grid grid-cols-1">
@@ -384,7 +396,8 @@ const TaskList = ({
                       task.userStatus,
                       task.verificationData,
                       task.verificationMethod,
-                      task.action
+                      task.action,
+                      userTelegramId
                     )
                   }
                 >
