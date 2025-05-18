@@ -238,25 +238,37 @@ export const taskAPI = {
     }
   },
 
-  verifyTask: async (
-    taskId: string,
-    verificationData: string,
-    telegramId: string
-  ) => {
+  verifyTask: async (taskId: string, action: string, telegramId: string) => {
     try {
-      const response = await fetch(
-        `${API_URL}/tasks/verify/${verificationData}`,
-        {
-          method: "POST",
-          body: JSON.stringify({ taskId, telegramId }),
-          ...authHeader(),
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/tasks/verify/${action}`, {
+        method: "POST",
+        body: JSON.stringify({ taskId, telegramId }),
+        ...authHeader(),
+        credentials: "include",
+      });
 
       return await handleResponse(response);
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  connectWallet: async (
+    taskId: string,
+    action: string,
+    walletAddress: string
+  ) => {
+    try {
+      const response = await fetch(`${API_URL}/tasks/verify/${action}`, {
+        method: "POST",
+        body: JSON.stringify({ taskId, walletAddress }),
+        ...authHeader(),
+        credentials: "include",
+      });
+
+      return await handleResponse(response);
+    } catch (error) {
+      console.log(error.message);
     }
   },
 };

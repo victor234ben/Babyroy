@@ -59,6 +59,10 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    icon: {
+      type: String,
+      default: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747334030/kvqmrisqgphhhlsx3u8u.png"
+    },
   },
   {
     timestamps: true,

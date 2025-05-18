@@ -16,14 +16,11 @@ import ReferralsPage from "./pages/ReferralsPage";
 import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import TelegramLogin from "./pages/TelegramLogin";
-
-import { useEffect } from "react";
+import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-
-  
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
@@ -49,7 +46,13 @@ const App = () => (
               path="/tasks"
               element={
                 <ProtectedRoute>
-                  <TasksPage />
+                  <TonConnectUIProvider
+                    manifestUrl={
+                      "https://victor234ben.github.io/ton-manifest/tonconnect-manifest.json"
+                    }
+                  >
+                    <TasksPage />
+                  </TonConnectUIProvider>
                 </ProtectedRoute>
               }
             />

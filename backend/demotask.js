@@ -27,19 +27,6 @@ const demoTasks = [
     isActive: true,
   },
   {
-    title: "Connect Wallet",
-    description: "Conect ton wallet.",
-    type: "one-time",
-    category: "engagement",
-    pointsReward: 500,
-    requirements: "Connect wallet",
-    verificationMethod: "action",
-    action: "connect",
-    verificationData: "",
-    taskType: "ingame",
-    isActive: true,
-  },
-  {
     title: "Join Telegram Group",
     description: "Join our official Telegram group to stay updated.",
     type: "one-time",
@@ -49,6 +36,35 @@ const demoTasks = [
     verificationMethod: "action",
     verificationData: "https://t.me/BabyRoyarmy",
     action: "telegram",
+    taskType: "ingame",
+    isActive: true,
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747595252/livk3oxncma1p1bvxqbw.webp"
+  },
+  {
+    title: "Connect Wallet",
+    description: "Conect ton wallet.",
+    type: "one-time",
+    category: "engagement",
+    pointsReward: 500,
+    requirements: "Connect wallet",
+    verificationMethod: "action",
+    action: "connect",
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747595230/jrprhzwmc34gkeajuowy.png",
+    verificationData: "manual",
+    taskType: "ingame",
+    isActive: true,
+  },
+  {
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747595368/bs5erycda2v6dpxi94uw.svg",
+    title: "Invite 10 friends",
+    description: "Invite a total number of 10 friends",
+    type: "one-time",
+    category: "social",
+    pointsReward: 5000,
+    requirements: "Invite friends",
+    verificationMethod: "action",
+    action: "inviteFriends?inviteNumber=10",
+    verificationData: "manual",
     taskType: "ingame",
     isActive: true,
   },
@@ -63,6 +79,7 @@ const demoTasks = [
     verificationData: "https://youtube.com/@BabyRoymeme",
     taskType: "ingame",
     isActive: true,
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747596738/uslzgesagojpmarq8hdj.webp"
   },
   {
     title: "Follow Twitter",
@@ -75,6 +92,7 @@ const demoTasks = [
     verificationData: "https://x.com/BabyRoymeme",
     taskType: "ingame",
     isActive: true,
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747595237/jzmj6fpdsfzjklos3sfi.png"
   },
   {
     title: "Tweet about BabyRoy",
@@ -87,14 +105,14 @@ const demoTasks = [
     verificationData: "https://x.com/BabyRoymeme",
     taskType: "ingame",
     isActive: true,
+    icon: "https://res.cloudinary.com/dtcbirvxc/image/upload/v1747595237/jzmj6fpdsfzjklos3sfi.png"
   },
-
   {
     title: "Complete Onboarding",
     description: "Complete the onboarding steps after signing up.",
     type: "one-time",
     category: "learn",
-    pointsReward: 2000,
+    pointsReward: 1000,
     requirements: "Finish all onboarding steps.",
     verificationMethod: "auto",
     verificationData: "",

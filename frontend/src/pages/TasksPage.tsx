@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
+import { TonConnectUIProvider, useTonConnectUI } from "@tonconnect/ui-react";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -26,6 +27,7 @@ const TasksPage = () => {
   const [processing, setProcessing] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TaskCategory>("ingame");
+  const [tonConnectUI] = useTonConnectUI();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -63,6 +65,134 @@ const TasksPage = () => {
     setFilteredTasks(result);
   }, [searchTerm, activeTab, tasks]);
 
+  const updateSingleTask = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task
+      )
+    );
+  };
+
+  const wait = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleVisibilityAndUpdate = (callback: () => Promise<void>) => {
+    let userLeft = false;
+
+    const onVisibilityChange = async () => {
+      if (document.visibilityState === "hidden") {
+        userLeft = true;
+      }
+
+      if (document.visibilityState === "visible" && userLeft) {
+        await wait(4000);
+        await callback();
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+  };
+
+  const handleAutoVerification = async (taskId: string) => {
+    setProcessing(taskId);
+    await wait(4000);
+    try {
+      const res = await taskAPI.getTaskById(taskId);
+      updateSingleTask(res.task);
+    } catch (error) {
+      console.error("Error fetching task:", error);
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  const handleLinkVisitVerification = async (
+    taskId: string,
+    verificationData: string
+  ) => {
+    window.open(verificationData, "_blank");
+    setProcessing(taskId);
+
+    handleVisibilityAndUpdate(async () => {
+      try {
+        const res = await taskAPI.getTaskById(taskId);
+        updateSingleTask(res.task);
+      } catch (error) {
+        console.error("Error fetching task:", error);
+      } finally {
+        setProcessing(null);
+      }
+    });
+  };
+
+  const handleActionVerification = async (
+    taskId: string,
+    verificationData: string,
+    action: string,
+    telegramId: string
+  ) => {
+    if (action === "connect") {
+      setProcessing(taskId);
+
+      try {
+        await tonConnectUI.openModal(); // Open wallet connect modal
+        const wallet = tonConnectUI.wallet;
+
+        if (!wallet) {
+          console.error("Wallet not connected");
+          setProcessing(null);
+          return;
+        }
+
+        const walletAddress = wallet.account.address;
+
+        // Now call the backend API with wallet address and task ID
+        const data = await taskAPI.connectWallet(taskId, action, walletAddress);
+        updateSingleTask(data.task);
+      } catch (error) {
+        console.error("Error connecting wallet or fetching task:", error);
+      } finally {
+        setProcessing(null);
+      }
+    } else {
+      window.open(verificationData, "_blank");
+      setProcessing(taskId);
+
+      handleVisibilityAndUpdate(async () => {
+        try {
+          const data = await taskAPI.verifyTask(taskId, action, telegramId);
+          updateSingleTask(data.task);
+        } catch (error) {
+          console.error("Error verifying task:", error);
+        } finally {
+          setProcessing(null);
+        }
+      });
+    }
+  };
+
+  const handlePendingTask = async (taskId: string) => {
+    try {
+      const res = await taskAPI.completeTask(taskId);
+      const newStatus = res.taskCompletion?.status || "pending";
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId
+            ? {
+                ...task,
+                userStatus: newStatus,
+                userSubmission: res.taskCompletion.submissionData || "",
+              }
+            : task
+        )
+      );
+    } catch (error) {
+      console.error("Error completing task:", error);
+    }
+  };
+
   const handleTaskClick = async (
     taskId: string,
     userStatus: string,
@@ -73,130 +203,27 @@ const TasksPage = () => {
   ) => {
     try {
       if (userStatus === "available") {
-        //automatic tasks processing
         if (verificationMethod === "auto") {
-          setProcessing(taskId);
-          await new Promise((resolve) => setTimeout(resolve, 4000));
-          try {
-            const res = await taskAPI.getTaskById(taskId);
-            const updatedTask = res.task;
-
-            const updatedTasks = tasks.map((task) =>
-              task._id === updatedTask._id ? updatedTask : task
-            );
-
-            setTasks(updatedTasks);
-          } catch (error) {
-            console.error("Error fetching task:", error);
-          } finally {
-            setProcessing(null);
-          }
+          await handleAutoVerification(taskId);
         } else if (verificationMethod === "link-visit") {
-          window.open(verificationData, "_blank");
-
-          setProcessing(taskId);
-          let userLeft = false;
-
-          const onVisibilityChange = async () => {
-            if (document.visibilityState === "hidden") {
-              userLeft = true;
-            }
-
-            if (document.visibilityState === "visible" && userLeft) {
-              await new Promise((resolve) => setTimeout(resolve, 4000));
-
-              try {
-                const res = await taskAPI.getTaskById(taskId);
-                const updatedTask = res.task;
-
-                const updatedTasks = tasks.map((task) =>
-                  task._id === updatedTask._id ? updatedTask : task
-                );
-
-                setTasks(updatedTasks);
-              } catch (error) {
-                console.error("Error fetching task:", error);
-              } finally {
-                setProcessing(null);
-                document.removeEventListener(
-                  "visibilitychange",
-                  onVisibilityChange
-                );
-              }
-            }
-          };
-
-          // Start listening for visibility changes
-          document.addEventListener("visibilitychange", onVisibilityChange);
+          await handleLinkVisitVerification(taskId, verificationData);
         } else if (verificationMethod === "action") {
-          window.open(verificationData, "_blank");
-          console.log("called");
-
-          setProcessing(taskId);
-          let userLeft = false;
-
-          const onVisibilityChange = async () => {
-            if (document.visibilityState === "hidden") {
-              userLeft = true;
-            }
-
-            if (document.visibilityState === "visible" && userLeft) {
-              await new Promise((resolve) => setTimeout(resolve, 4000));
-
-              try {
-                const data = await taskAPI.verifyTask(
-                  taskId,
-                  action,
-                  telegramId
-                );
-
-                console.log(telegramId);
-
-                const updatedTask = data.task;
-
-                const updatedTasks = tasks.map((task) =>
-                  task._id === updatedTask._id ? updatedTask : task
-                );
-
-                setTasks(updatedTasks);
-              } catch (error) {
-                console.error("Error fetching task:", error);
-              } finally {
-                setProcessing(null);
-                document.removeEventListener(
-                  "visibilitychange",
-                  onVisibilityChange
-                );
-              }
-            }
-          };
-
-          // Start listening for visibility changes
-          document.addEventListener("visibilitychange", onVisibilityChange);
+          await handleActionVerification(
+            taskId,
+            verificationData,
+            action,
+            telegramId
+          );
         } else {
           return null;
         }
       } else if (userStatus === "pending") {
-        const res = await taskAPI.completeTask(taskId);
-        const newStatus = res.taskCompletion?.status || "pending";
-
-        const updatedTasks = tasks.map((task) => {
-          if (task._id === taskId) {
-            return {
-              ...task,
-              userStatus: newStatus,
-              userSubmission: res.taskCompletion.submissionData || "",
-            };
-          }
-          return task;
-        });
-
-        setTasks(updatedTasks);
+        await handlePendingTask(taskId);
       } else {
         return null;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
     }
   };
