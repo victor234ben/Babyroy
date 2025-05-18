@@ -34,6 +34,11 @@ app.use(
       ],
       connectSrc: ["'self'", 'https://api.telegram.org'],
       frameSrc: ["'self'", 'https://t.me'], // allow Telegram if embedding
+      imgSrc: [
+        "'self'",
+        'data:', // in case you use base64 images
+        'https://res.cloudinary.com',
+      ],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
