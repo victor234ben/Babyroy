@@ -38,6 +38,8 @@ app.use(
         "'self'",
         'data:', // in case you use base64 images
         'https://res.cloudinary.com',
+        'https://static.okx.com',
+        'https://public.bnbstatic.com',
       ],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],

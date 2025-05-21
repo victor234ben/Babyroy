@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { TonConnectUIProvider, useTonConnectUI } from "@tonconnect/ui-react";
+import { useTonConnectUI } from "@tonconnect/ui-react";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -134,20 +134,26 @@ const TasksPage = () => {
   ) => {
     if (action === "connect") {
       setProcessing(taskId);
-
       try {
-        await tonConnectUI.openModal(); // Open wallet connect modal
-        const wallet = tonConnectUI.wallet;
+        let wallet = tonConnectUI.wallet;
 
         if (!wallet) {
-          console.error("Wallet not connected");
+          // Wallet not connected, open modal to connect
+          await tonConnectUI.openModal();
+          wallet = tonConnectUI.wallet;
+        } else {
+          toast.success("wallet connected already")
+        }
+
+        if (!wallet) {
+          // console.error("Wallet not connected after modal");
           setProcessing(null);
           return;
         }
 
         const walletAddress = wallet.account.address;
+        // console.log("wallet connected", walletAddress);
 
-        // Now call the backend API with wallet address and task ID
         const data = await taskAPI.connectWallet(taskId, action, walletAddress);
         updateSingleTask(data.task);
       } catch (error) {
@@ -384,7 +390,7 @@ const TaskList = ({
   }
 
   return (
-    <div className="grid grid-cols-1 ">
+    <div className="grid grid-cols-1 mb-[80px]">
       {tasks?.map((task) => (
         <Card key={task._id} className="px-2 py-2">
           <CardHeader className="flex flex-row flex-nowrap justify-between items-center">
