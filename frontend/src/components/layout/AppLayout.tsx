@@ -31,6 +31,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const { pathname } = location;
+  
 
   return (
     <div className="flex min-h-screen w-full md:max-w-[600px] lg:max-w-md mx-auto">
