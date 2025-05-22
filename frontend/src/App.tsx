@@ -50,6 +50,9 @@ const App = () => (
                     manifestUrl={
                       "https://victor234ben.github.io/ton-manifest/tonconnect-manifest.json"
                     }
+                    actionsConfiguration={{
+                      twaReturnUrl: "https://t.me/babyroyroybot", // VERY IMPORTANT
+                    }}
                   >
                     <TasksPage />
                   </TonConnectUIProvider>

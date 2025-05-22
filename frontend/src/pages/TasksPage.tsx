@@ -16,7 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTonConnectUI } from "@tonconnect/ui-react";
+import { useTonWallet } from "@tonconnect/ui-react";
+import { tonConnectUI } from "@/lib/tonConnectUI";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -27,7 +28,8 @@ const TasksPage = () => {
   const [processing, setProcessing] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TaskCategory>("ingame");
-  const [tonConnectUI] = useTonConnectUI();
+  const [walletAction, setWalletAction] = useState(null);
+  const wallet = useTonWallet();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -64,6 +66,33 @@ const TasksPage = () => {
 
     setFilteredTasks(result);
   }, [searchTerm, activeTab, tasks]);
+
+  useEffect(() => {
+    const handleWalletConnection = async () => {
+      if (wallet && walletAction?.action === "connect") {
+        try {
+          setProcessing(walletAction.taskId);
+          const walletAddress = wallet.account.address;
+
+          const data = await taskAPI.connectWallet(
+            walletAction.taskId,
+            walletAction.action,
+            walletAddress
+          );
+          updateSingleTask(data.task);
+          toast.success("Wallet connected!");
+        } catch (error) {
+          console.error("Failed to connect wallet:", error);
+          toast.error("Wallet connection failed.");
+        } finally {
+          setProcessing(null);
+          setWalletAction(null);
+        }
+      }
+    };
+
+    handleWalletConnection();
+  }, [wallet, walletAction]);
 
   const updateSingleTask = (updatedTask) => {
     setTasks((prevTasks) =>
@@ -133,33 +162,16 @@ const TasksPage = () => {
     telegramId: string
   ) => {
     if (action === "connect") {
-      setProcessing(taskId);
+      setWalletAction({ taskId, action });
       try {
-        let wallet = tonConnectUI.wallet;
-
         if (!wallet) {
-          // Wallet not connected, open modal to connect
+          // Wallet not connected, open modal
           await tonConnectUI.openModal();
-          wallet = tonConnectUI.wallet;
         } else {
-          toast.success("wallet connected already")
+          toast.success("Wallet already connected");
         }
-
-        if (!wallet) {
-          // console.error("Wallet not connected after modal");
-          setProcessing(null);
-          return;
-        }
-
-        const walletAddress = wallet.account.address;
-        // console.log("wallet connected", walletAddress);
-
-        const data = await taskAPI.connectWallet(taskId, action, walletAddress);
-        updateSingleTask(data.task);
       } catch (error) {
-        console.error("Error connecting wallet or fetching task:", error);
-      } finally {
-        setProcessing(null);
+        console.error("Wallet modal error", error);
       }
     } else {
       window.open(verificationData, "_blank");

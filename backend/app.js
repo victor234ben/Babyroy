@@ -34,7 +34,7 @@ app.use(
         'https://api.telegram.org',
         "'unsafe-inline'", // only if absolutely necessary
       ],
-      connectSrc: ["'self'", 'https://api.telegram.org'],
+      connectSrc: ["'self'", 'https://api.telegram.org', 'https://raw.githubusercontent.com'],
       frameSrc: ["'self'", 'https://t.me'],
       imgSrc: [
         "'self'",
