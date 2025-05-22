@@ -65,47 +65,45 @@ const TasksPage = () => {
     }
 
     setFilteredTasks(result);
-  }, [searchTerm, activeTab, tasks]);
+  }, [searchTerm, activeTab, tasks, tonConnectUI]);
 
   useEffect(() => {
-    const handleWalletConnection = async () => {
-      console.log("wallet useEffect start running");
+    const storedAction = localStorage.getItem("walletAction");
 
-      const connectedWallet =
-        wallet || JSON.parse(localStorage.getItem("connectedWallet") || "null");
+    if (!walletAction && storedAction) {
+      setWalletAction(JSON.parse(storedAction));
+    }
+
+    const handleWalletConnection = async () => {
+      const connectedWallet = wallet;
 
       if (connectedWallet && walletAction?.action === "connect") {
         try {
           setProcessing(walletAction.taskId);
 
-          const walletAddress =
-            connectedWallet.account?.address || connectedWallet.address;
+          const walletAddress = connectedWallet.account?.address;
           if (!walletAddress) throw new Error("No wallet address found");
 
-          console.log("wallet address gotten", walletAddress);
+          const data = await taskAPI.connectWallet(
+            walletAction.taskId,
+            walletAction.action,
+            walletAddress
+          );
+          updateSingleTask(data.task);
+          toast.success("Wallet connected!");
 
-          // Avoid double saving if already saved
-          if (
-            localStorage.getItem("lastConnectedTask") !== walletAction.taskId
-          ) {
-            const data = await taskAPI.connectWallet(
-              walletAction.taskId,
-              walletAction.action,
-              walletAddress
-            );
-            updateSingleTask(data.task);
-            localStorage.setItem("lastConnectedTask", walletAction.taskId);
-            toast.success("Wallet connected!");
-          }
+          // Clean up
+          localStorage.removeItem("walletAction");
+          setWalletAction(null);
         } catch (error) {
           console.error("Failed to connect wallet:", error);
           toast.error("Wallet connection failed.");
         } finally {
           setProcessing(null);
-          setWalletAction(null);
         }
       }
     };
+
     handleWalletConnection();
   }, [wallet, walletAction]);
 
@@ -187,11 +185,14 @@ const TasksPage = () => {
     telegramId: string
   ) => {
     if (action === "connect") {
-      setWalletAction({ taskId, action });
+      const actionData = { taskId, action };
+      setWalletAction(actionData);
+      localStorage.setItem("walletAction", JSON.stringify(actionData)); // persist
 
       try {
         if (!wallet) {
           await tonConnectUI.openModal();
+
           console.log("modal opened");
         } else {
           toast.success("Wallet already connected");
