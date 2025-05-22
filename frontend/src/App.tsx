@@ -21,61 +21,60 @@ import { TonConnectUIProvider } from "@tonconnect/ui-react";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/telegramLogin" element={<TelegramLogin />} />
-            <Route path="/register" element={<RegisterPage />} />
+  <TonConnectUIProvider
+    manifestUrl={
+      "https://victor234ben.github.io/ton-manifest/tonconnect-manifest.json"
+    }
+    actionsConfiguration={{
+      twaReturnUrl: "https://t.me/babyroyroybot", // VERY IMPORTANT
+    }}
+  >
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/telegramLogin" element={<TelegramLogin />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/tasks"
-              element={
-                <ProtectedRoute>
-                  <TonConnectUIProvider
-                    manifestUrl={
-                      "https://victor234ben.github.io/ton-manifest/tonconnect-manifest.json"
-                    }
-                    actionsConfiguration={{
-                      twaReturnUrl: "https://t.me/babyroyroybot", // VERY IMPORTANT
-                    }}
-                  >
+              {/* Protected Routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/tasks"
+                element={
+                  <ProtectedRoute>
                     <TasksPage />
-                  </TonConnectUIProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/leaderboard"
-              element={
-                <ProtectedRoute>
-                  <LeaderBoardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/referrals"
-              element={
-                <ProtectedRoute>
-                  <ReferralsPage />
-                </ProtectedRoute>
-              }
-            />
-            {/* <Route
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/leaderboard"
+                element={
+                  <ProtectedRoute>
+                    <LeaderBoardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/referrals"
+                element={
+                  <ProtectedRoute>
+                    <ReferralsPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route
               path="/profile"
               element={
                 <ProtectedRoute>
@@ -84,13 +83,14 @@ const App = () => (
               }
             /> */}
 
-            {/* Not Found Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+              {/* Not Found Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </TonConnectUIProvider>
 );
 
 export default App;
