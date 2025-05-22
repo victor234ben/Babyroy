@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -16,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { useWalletConnection } from "@/hooks/useWalletConnection";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -27,68 +26,8 @@ const TasksPage = () => {
   const [processing, setProcessing] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TaskCategory>("ingame");
-  const [walletAction, setWalletAction] = useState(null);
-  const wallet = useTonWallet();
-  const [tonConnectUI] = useTonConnectUI();
-
-  // 1. Restore walletAction from localStorage once on mount
-  useEffect(() => {
-    const storedAction = localStorage.getItem("walletAction");
-    toast.success("this is storedaction" + storedAction);
-    if (storedAction) {
-      setWalletAction(JSON.parse(storedAction));
-    }
-  }, []);
-
-  // 2. Handle wallet connection logic
-  useEffect(() => {
-    if (!wallet?.account?.address || !walletAction) return;
-
-    const handleWalletConnection = async () => {
-      if (walletAction.action === "connect") {
-        try {
-          setProcessing(walletAction.taskId);
-
-          const walletAddress = wallet.account.address;
-          toast.success("this is the wallet address" + walletAddress)
-          if (!walletAddress) throw new Error("No wallet address found");
-
-          const data = await taskAPI.connectWallet(
-            walletAction.taskId,
-            walletAction.action,
-            walletAddress
-          );
-          updateSingleTask(data.task);
-          toast.success("Wallet connected!");
-
-          localStorage.removeItem("walletAction");
-          setWalletAction(null);
-        } catch (error) {
-          console.error("Failed to connect wallet:", error);
-          toast.error("Wallet connection failed.");
-        } finally {
-          setProcessing(null);
-        }
-      }
-    };
-
-    handleWalletConnection();
-  }, [wallet, walletAction]);
-
-  // 3. Listen to wallet status changes and cleanup on unmount
-  useEffect(() => {
-    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
-      if (wallet) {
-        localStorage.setItem("connectedWallet", JSON.stringify(wallet));
-      } else {
-        localStorage.removeItem("connectedWallet");
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  const { connectWallet, disconnectWallet, isConnected, walletAddress } =
+    useWalletConnection();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -124,7 +63,7 @@ const TasksPage = () => {
     }
 
     setFilteredTasks(result);
-  }, [searchTerm, activeTab, tasks, tonConnectUI]);
+  }, [searchTerm, activeTab, tasks]);
 
   const updateSingleTask = (updatedTask) => {
     setTasks((prevTasks) =>
@@ -194,16 +133,17 @@ const TasksPage = () => {
     telegramId: string
   ) => {
     if (action === "connect") {
-      const actionData = { taskId, action };
-      setWalletAction(actionData);
-      localStorage.setItem("walletAction", JSON.stringify(actionData)); // persist
-
       try {
-        toast.success("modal opened before");
-
-        await tonConnectUI.openModal();
-
-        toast.success("modal opened after");
+       let address = walletAddress;
+        
+        // If not connected, trigger connection
+        if (!isConnected) {
+          address = await connectWallet();
+        }
+        
+        // Send to backend
+        await taskAPI.connectWallet(taskId, action, address);
+        toast.success("Wallet connected successfully!");
       } catch (error) {
         console.error("Wallet modal error", error);
         toast.error("modal opened error");

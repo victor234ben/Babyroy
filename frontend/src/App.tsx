@@ -1,3 +1,5 @@
+import "./patchCustomElements";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,68 +18,74 @@ import ReferralsPage from "./pages/ReferralsPage";
 import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import TelegramLogin from "./pages/TelegramLogin";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { debugNetworkRequests } from "./lib/debugNetworkRequests";
+import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import { tonConnectConfig } from "./config/tonconnect";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 debugNetworkRequests();
 
-const App = () => (
-  <TonConnectUIProvider
-    manifestUrl={
-      "https://victor234ben.github.io/ton-manifest/tonconnect-manifest.json"
-    }
-    actionsConfiguration={{
-      twaReturnUrl: "https://t.me/babyroyroybot", // VERY IMPORTANT
-    }}
-  >
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/telegramLogin" element={<TelegramLogin />} />
-              <Route path="/register" element={<RegisterPage />} />
+const App = () => {
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
 
-              {/* Protected Routes */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/tasks"
-                element={
-                  <ProtectedRoute>
-                    <TasksPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/leaderboard"
-                element={
-                  <ProtectedRoute>
-                    <LeaderBoardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/referrals"
-                element={
-                  <ProtectedRoute>
-                    <ReferralsPage />
-                  </ProtectedRoute>
-                }
-              />
-              {/* <Route
+      return;
+    }
+  }, []);
+
+  return (
+    <TonConnectUIProvider manifestUrl={tonConnectConfig.manifestUrl}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/telegramLogin" element={<TelegramLogin />} />
+                <Route path="/register" element={<RegisterPage />} />
+
+                {/* Protected Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tasks"
+                  element={
+                    <ProtectedRoute>
+                      <TasksPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/leaderboard"
+                  element={
+                    <ProtectedRoute>
+                      <LeaderBoardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/referrals"
+                  element={
+                    <ProtectedRoute>
+                      <ReferralsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* <Route
               path="/profile"
               element={
                 <ProtectedRoute>
@@ -86,14 +94,15 @@ const App = () => (
               }
             /> */}
 
-              {/* Not Found Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </TonConnectUIProvider>
-);
+                {/* Not Found Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </TonConnectUIProvider>
+  );
+};
 
 export default App;

@@ -22,3 +22,14 @@ declare global {
     };
   }
 }
+
+
+export const initTelegramWebApp = () => {
+  if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    return tg;
+  }
+  return null;
+};
