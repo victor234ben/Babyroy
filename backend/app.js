@@ -29,23 +29,40 @@ app.use(
       scriptSrc: [
         "'self'",
         'https://telegram.org',
-        'https://cdn.gpteng.co', // allow GPT Engineer script if needed
-        "'unsafe-inline'",       // Optional: allow inline scripts if you're using any
+        'https://cdn.gpteng.co',
+        'https://raw.githubusercontent.com',
+        'https://api.telegram.org',
+        "'unsafe-inline'", // only if absolutely necessary
       ],
       connectSrc: ["'self'", 'https://api.telegram.org'],
-      frameSrc: ["'self'", 'https://t.me'], // allow Telegram if embedding
+      frameSrc: ["'self'", 'https://t.me'],
       imgSrc: [
         "'self'",
-        'data:', // in case you use base64 images
+        'data:',
         'https://res.cloudinary.com',
         'https://static.okx.com',
         'https://public.bnbstatic.com',
+
+        // Additional image sources from your error messages
+        'https://wallet.tg',
+        'https://tonkeeper.com',
+        'https://static.mytonwallet.io',
+        'https://tonhub.com',
+        'https://raw.githubusercontent.com',
+        'https://fintopio.com',
+        'https://s.pvcliping.com',
+        'https://img.gatedataimg.com',
+        'https://img.bitgetimg.com',
+        'https://app.tobiwallet.app',
+        'https://xtonwallet.com',
+        'https://wallet.ton.org',
       ],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
   })
 );
+
 app.use(cookieParser())
 app.use(cors({
   origin: ["http://localhost:8080", "https://babyroy.onrender.com/"],
