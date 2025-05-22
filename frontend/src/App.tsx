@@ -17,8 +17,11 @@ import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import TelegramLogin from "./pages/TelegramLogin";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import { debugNetworkRequests } from "./lib/debugNetworkRequests";
 
 const queryClient = new QueryClient();
+
+debugNetworkRequests();
 
 const App = () => (
   <TonConnectUIProvider

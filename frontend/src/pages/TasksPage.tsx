@@ -34,6 +34,7 @@ const TasksPage = () => {
   // 1. Restore walletAction from localStorage once on mount
   useEffect(() => {
     const storedAction = localStorage.getItem("walletAction");
+    toast.success("this is storedaction" + storedAction);
     if (storedAction) {
       setWalletAction(JSON.parse(storedAction));
     }
@@ -49,6 +50,7 @@ const TasksPage = () => {
           setProcessing(walletAction.taskId);
 
           const walletAddress = wallet.account.address;
+          toast.success("this is the wallet address" + walletAddress)
           if (!walletAddress) throw new Error("No wallet address found");
 
           const data = await taskAPI.connectWallet(

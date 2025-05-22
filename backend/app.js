@@ -32,18 +32,36 @@ app.use(
         'https://cdn.gpteng.co',
         'https://raw.githubusercontent.com',
         'https://api.telegram.org',
-        "'unsafe-inline'", // only if absolutely necessary
+        'https://unpkg.com',
+        'https://tonconnect.io',
+        'https://wallet.ton.org',
+        'https://tonkeeper.com',
+        "'unsafe-inline'", // Only if absolutely necessary
       ],
-      connectSrc: ["'self'", 'https://api.telegram.org', 'https://raw.githubusercontent.com'],
-      frameSrc: ["'self'", 'https://t.me'],
+      connectSrc: [
+        "'self'",
+        'https://api.telegram.org',
+        'https://raw.githubusercontent.com',
+        'https://tonapi.io',
+        'wss://bridge.tonapi.io',
+        'https://connect.tonhubapi.com',
+        'wss://bridge.tonhubapi.com',
+      ],
+      frameSrc: [
+        "'self'",
+        'https://t.me',
+        'https://tonkeeper.com',
+        'https://wallet.ton.org',
+        'https://tonhub.com',
+        'https://app.tobiwallet.app',
+        'https://xtonwallet.com',
+      ],
       imgSrc: [
         "'self'",
         'data:',
         'https://res.cloudinary.com',
         'https://static.okx.com',
         'https://public.bnbstatic.com',
-
-        // Additional image sources from your error messages
         'https://wallet.tg',
         'https://tonkeeper.com',
         'https://static.mytonwallet.io',
@@ -63,9 +81,20 @@ app.use(
   })
 );
 
+
 app.use(cookieParser())
 app.use(cors({
-  origin: ["http://localhost:8080", "https://babyroy.onrender.com/"],
+  origin: ["http://localhost:8080",
+    "https://babyroy.onrender.com/",
+    'https://t.me',
+    'https://web.telegram.org',
+    'https://telegram.org',
+    'https://tonkeeper.com',
+    'https://*.ton.org',
+    'https://connect.tonhubapi.com',
+    'https://bridge.tonapi.io',
+    'https://cdn.jsdelivr.net',
+    'https://unpkg.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
@@ -79,7 +108,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 const bot = new TelegramBot(token);
-bot.setWebHook('https://yourdomain.com/telegram-webhook');
+bot.setWebHook('https://babyroy.onrender.com/');
 // 📩 Listen for '/start' command
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
