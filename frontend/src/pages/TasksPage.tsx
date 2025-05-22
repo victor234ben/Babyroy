@@ -31,6 +31,63 @@ const TasksPage = () => {
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
 
+  // 1. Restore walletAction from localStorage once on mount
+  useEffect(() => {
+    const storedAction = localStorage.getItem("walletAction");
+    if (storedAction) {
+      setWalletAction(JSON.parse(storedAction));
+    }
+  }, []);
+
+  // 2. Handle wallet connection logic
+  useEffect(() => {
+    if (!wallet?.account?.address || !walletAction) return;
+
+    const handleWalletConnection = async () => {
+      if (walletAction.action === "connect") {
+        try {
+          setProcessing(walletAction.taskId);
+
+          const walletAddress = wallet.account.address;
+          if (!walletAddress) throw new Error("No wallet address found");
+
+          const data = await taskAPI.connectWallet(
+            walletAction.taskId,
+            walletAction.action,
+            walletAddress
+          );
+          updateSingleTask(data.task);
+          toast.success("Wallet connected!");
+
+          localStorage.removeItem("walletAction");
+          setWalletAction(null);
+        } catch (error) {
+          console.error("Failed to connect wallet:", error);
+          toast.error("Wallet connection failed.");
+        } finally {
+          setProcessing(null);
+        }
+      }
+    };
+
+    handleWalletConnection();
+  }, [wallet, walletAction]);
+
+  // 3. Listen to wallet status changes and cleanup on unmount
+  useEffect(() => {
+    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
+      if (wallet) {
+        localStorage.setItem("connectedWallet", JSON.stringify(wallet));
+      } else {
+        localStorage.removeItem("connectedWallet");
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -66,56 +123,6 @@ const TasksPage = () => {
 
     setFilteredTasks(result);
   }, [searchTerm, activeTab, tasks, tonConnectUI]);
-
-  useEffect(() => {
-    const storedAction = localStorage.getItem("walletAction");
-
-    if (!walletAction && storedAction) {
-      setWalletAction(JSON.parse(storedAction));
-    }
-
-    const handleWalletConnection = async () => {
-      const connectedWallet = wallet;
-
-      if (connectedWallet && walletAction?.action === "connect") {
-        try {
-          setProcessing(walletAction.taskId);
-
-          const walletAddress = connectedWallet.account?.address;
-          if (!walletAddress) throw new Error("No wallet address found");
-
-          const data = await taskAPI.connectWallet(
-            walletAction.taskId,
-            walletAction.action,
-            walletAddress
-          );
-          updateSingleTask(data.task);
-          toast.success("Wallet connected!");
-
-          // Clean up
-          localStorage.removeItem("walletAction");
-          setWalletAction(null);
-        } catch (error) {
-          console.error("Failed to connect wallet:", error);
-          toast.error("Wallet connection failed.");
-        } finally {
-          setProcessing(null);
-        }
-      }
-    };
-
-    handleWalletConnection();
-  }, [wallet, walletAction]);
-
-  useEffect(() => {
-    tonConnectUI.onStatusChange((wallet) => {
-      if (wallet) {
-        localStorage.setItem("connectedWallet", JSON.stringify(wallet));
-      } else {
-        localStorage.removeItem("connectedWallet");
-      }
-    });
-  }, []);
 
   const updateSingleTask = (updatedTask) => {
     setTasks((prevTasks) =>
@@ -190,15 +197,14 @@ const TasksPage = () => {
       localStorage.setItem("walletAction", JSON.stringify(actionData)); // persist
 
       try {
-        if (!wallet) {
-          await tonConnectUI.openModal();
+        toast.success("modal opened before");
 
-          console.log("modal opened");
-        } else {
-          toast.success("Wallet already connected");
-        }
+        await tonConnectUI.openModal();
+
+        toast.success("modal opened after");
       } catch (error) {
         console.error("Wallet modal error", error);
+        toast.error("modal opened error");
       }
     } else {
       window.open(verificationData, "_blank");
