@@ -16,8 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Package, PackagePlus, Plus, Loader } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTonWallet } from "@tonconnect/ui-react";
-import { tonConnectUI } from "@/lib/tonConnectUI";
+import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 
 type TaskCategory = "ingame" | "partners";
 
@@ -30,6 +29,7 @@ const TasksPage = () => {
   const [activeTab, setActiveTab] = useState<TaskCategory>("ingame");
   const [walletAction, setWalletAction] = useState(null);
   const wallet = useTonWallet();
+  const [tonConnectUI] = useTonConnectUI();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -69,10 +69,12 @@ const TasksPage = () => {
 
   useEffect(() => {
     const handleWalletConnection = async () => {
+      console.log("wallet useeffect start running")
       if (wallet && walletAction?.action === "connect") {
         try {
           setProcessing(walletAction.taskId);
           const walletAddress = wallet.account.address;
+          console.log("wallet address gotten", walletAddress)
 
           const data = await taskAPI.connectWallet(
             walletAction.taskId,
@@ -167,6 +169,7 @@ const TasksPage = () => {
         if (!wallet) {
           // Wallet not connected, open modal
           await tonConnectUI.openModal();
+          console.log("modal opened")
         } else {
           toast.success("Wallet already connected");
         }

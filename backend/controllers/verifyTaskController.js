@@ -83,7 +83,7 @@ const verifyTelegram = async (req, res) => {
 const connectWallet = async (req, res) => {
     try {
         const { walletAddress, taskId } = req.body;
-        console.log(walletAddress, taskId)
+        console.log("this is walletadrress and taskid",walletAddress, taskId)
 
         if (!walletAddress || !taskId) {
             return res.status(400).json({ success: false, message: 'Missing wallet address or task ID' });
