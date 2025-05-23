@@ -22,68 +22,68 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Security middleware
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        'https://telegram.org',
-        'https://cdn.gpteng.co',
-        'https://raw.githubusercontent.com',
-        'https://api.telegram.org',
-        'https://unpkg.com',
-        'https://tonconnect.io',
-        'https://wallet.ton.org',
-        'https://tonkeeper.com',
-        "'unsafe-inline'", // Only if absolutely necessary
-      ],
-      connectSrc: [
-        "'self'",
-        'https://api.telegram.org',
-        'https://raw.githubusercontent.com',
-        'https://tonapi.io',
-        'wss://bridge.tonapi.io',
-        'https://connect.tonhubapi.com',
-        'wss://bridge.tonhubapi.com',
-      ],
-      frameSrc: [
-        "'self'",
-        'https://t.me',
-        'https://tonkeeper.com',
-        'https://wallet.ton.org',
-        'https://tonhub.com',
-        'https://app.tobiwallet.app',
-        'https://xtonwallet.com',
-      ],
-      imgSrc: [
-        "'self'",
-        'data:',
-        'https://res.cloudinary.com',
-        'https://static.okx.com',
-        'https://public.bnbstatic.com',
-        'https://wallet.tg',
-        'https://tonkeeper.com',
-        'https://static.mytonwallet.io',
-        'https://tonhub.com',
-        'https://raw.githubusercontent.com',
-        'https://fintopio.com',
-        'https://s.pvcliping.com',
-        'https://img.gatedataimg.com',
-        'https://img.bitgetimg.com',
-        'https://app.tobiwallet.app',
-        'https://xtonwallet.com',
-        'https://wallet.ton.org',
-        'https://chain-cdn.uxuy.com',
-        'https://hk.tpstatic.net',
-        'https://pub.tomo.inc/',
-        'https://cdn.mirailabs.co',
-      ],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-  })
-);
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: [
+//         "'self'",
+//         'https://telegram.org',
+//         'https://cdn.gpteng.co',
+//         'https://raw.githubusercontent.com',
+//         'https://api.telegram.org',
+//         'https://unpkg.com',
+//         'https://tonconnect.io',
+//         'https://wallet.ton.org',
+//         'https://tonkeeper.com',
+//         "'unsafe-inline'", // Only if absolutely necessary
+//       ],
+//       connectSrc: [
+//         "'self'",
+//         'https://api.telegram.org',
+//         'https://raw.githubusercontent.com',
+//         'https://tonapi.io',
+//         'wss://bridge.tonapi.io',
+//         'https://connect.tonhubapi.com',
+//         'wss://bridge.tonhubapi.com',
+//       ],
+//       frameSrc: [
+//         "'self'",
+//         'https://t.me',
+//         'https://tonkeeper.com',
+//         'https://wallet.ton.org',
+//         'https://tonhub.com',
+//         'https://app.tobiwallet.app',
+//         'https://xtonwallet.com',
+//       ],
+//       imgSrc: [
+//         "'self'",
+//         'data:',
+//         'https://res.cloudinary.com',
+//         'https://static.okx.com',
+//         'https://public.bnbstatic.com',
+//         'https://wallet.tg',
+//         'https://tonkeeper.com',
+//         'https://static.mytonwallet.io',
+//         'https://tonhub.com',
+//         'https://raw.githubusercontent.com',
+//         'https://fintopio.com',
+//         'https://s.pvcliping.com',
+//         'https://img.gatedataimg.com',
+//         'https://img.bitgetimg.com',
+//         'https://app.tobiwallet.app',
+//         'https://xtonwallet.com',
+//         'https://wallet.ton.org',
+//         'https://chain-cdn.uxuy.com',
+//         'https://hk.tpstatic.net',
+//         'https://pub.tomo.inc/',
+//         'https://cdn.mirailabs.co',
+//       ],
+//       objectSrc: ["'none'"],
+//       upgradeInsecureRequests: [],
+//     },
+//   })
+// );
 
 
 app.use(cookieParser())
