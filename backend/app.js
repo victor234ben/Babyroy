@@ -17,7 +17,7 @@ const verifyRoutes = require('./routes/verityTaskRoutes')
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-const token = process.env.TELEGRAMTOKEN;
+const token = process.env.TELEGRAM_TOKEN;
 const app = express();
 app.set('trust proxy', 1);
 

@@ -142,7 +142,8 @@ const TasksPage = () => {
         }
 
         // Send to backend
-        await taskAPI.connectWallet(taskId, action, address);
+        const res = await taskAPI.connectWallet(taskId, action, address);
+        updateSingleTask(res.task);
         toast.success("Wallet connected successfully!");
       } catch (error) {
         console.error("Wallet modal error", error);

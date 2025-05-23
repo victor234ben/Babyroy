@@ -4,12 +4,13 @@ const TaskCompletion = require('../models/taskCompletionModel');
 const User = require('../models/userModel')
 
 const TELEGRAM_GROUP_USERNAME = process.env.TELEGRAM_GROUP_USERNAME;
-const TELEGRAMTOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 
 const verifyTelegram = async (req, res) => {
     try {
+
+        console.log("called top")
         const { telegramId, taskId } = req.body;
-        console.log("this teid", telegramId, "taskid", taskId)
 
         if (!telegramId || !taskId) {
             return res.status(400).json({ success: false, message: 'telegramId and taskId are required.' });
@@ -23,19 +24,11 @@ const verifyTelegram = async (req, res) => {
 
         let userStatus;
         try {
-            const telegramRes = await axios.get(
-                `https://api.telegram.org/bot${TELEGRAMTOKEN}/getChatMember`,
-                {
-                    params: {
-                        chat_id: TELEGRAM_GROUP_USERNAME,
-                        user_id: telegramId,
-                    },
-                }
-            );
+            const telegramRes = await axios.get(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getChatMember?chat_id=${TELEGRAM_GROUP_USERNAME}&user_id=${telegramId}`)
 
-            console.log(telegramRes)
 
-            userStatus = telegramRes?.data?.status;
+            userStatus = telegramRes?.data?.result.status;
+
         } catch (telegramError) {
             console.error('Telegram API Error:', telegramError?.response?.data || telegramError.message);
             return res.status(500).json({ success: false, message: 'Failed to verify Telegram membership.' });
@@ -83,7 +76,6 @@ const verifyTelegram = async (req, res) => {
 const connectWallet = async (req, res) => {
     try {
         const { walletAddress, taskId } = req.body;
-        console.log("this is walletadrress and taskid",walletAddress, taskId)
 
         if (!walletAddress || !taskId) {
             return res.status(400).json({ success: false, message: 'Missing wallet address or task ID' });
