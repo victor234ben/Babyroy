@@ -22,68 +22,121 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Security middleware
-// app.use(
-//   helmet.contentSecurityPolicy({
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       scriptSrc: [
-//         "'self'",
-//         'https://telegram.org',
-//         'https://cdn.gpteng.co',
-//         'https://raw.githubusercontent.com',
-//         'https://api.telegram.org',
-//         'https://unpkg.com',
-//         'https://tonconnect.io',
-//         'https://wallet.ton.org',
-//         'https://tonkeeper.com',
-//         "'unsafe-inline'", // Only if absolutely necessary
-//       ],
-//       connectSrc: [
-//         "'self'",
-//         'https://api.telegram.org',
-//         'https://raw.githubusercontent.com',
-//         'https://tonapi.io',
-//         'wss://bridge.tonapi.io',
-//         'https://connect.tonhubapi.com',
-//         'wss://bridge.tonhubapi.com',
-//       ],
-//       frameSrc: [
-//         "'self'",
-//         'https://t.me',
-//         'https://tonkeeper.com',
-//         'https://wallet.ton.org',
-//         'https://tonhub.com',
-//         'https://app.tobiwallet.app',
-//         'https://xtonwallet.com',
-//       ],
-//       imgSrc: [
-//         "'self'",
-//         'data:',
-//         'https://res.cloudinary.com',
-//         'https://static.okx.com',
-//         'https://public.bnbstatic.com',
-//         'https://wallet.tg',
-//         'https://tonkeeper.com',
-//         'https://static.mytonwallet.io',
-//         'https://tonhub.com',
-//         'https://raw.githubusercontent.com',
-//         'https://fintopio.com',
-//         'https://s.pvcliping.com',
-//         'https://img.gatedataimg.com',
-//         'https://img.bitgetimg.com',
-//         'https://app.tobiwallet.app',
-//         'https://xtonwallet.com',
-//         'https://wallet.ton.org',
-//         'https://chain-cdn.uxuy.com',
-//         'https://hk.tpstatic.net',
-//         'https://pub.tomo.inc/',
-//         'https://cdn.mirailabs.co',
-//       ],
-//       objectSrc: ["'none'"],
-//       upgradeInsecureRequests: [],
-//     },
-//   })
-// );
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'", // Required for TonConnect UI
+        "'unsafe-eval'", // ✅ ADD THIS - Required for some TonConnect operations
+        'https://telegram.org',
+        'https://cdn.gpteng.co',
+        'https://raw.githubusercontent.com',
+        'https://api.telegram.org',
+        'https://unpkg.com',
+        'https://tonconnect.io',
+        'https://wallet.ton.org',
+        'https://tonkeeper.com',
+        'https://cdn.jsdelivr.net', // ✅ ADD THIS - Common CDN for TonConnect
+        'https://cdnjs.cloudflare.com' // ✅ ADD THIS - Another common CDN
+      ],
+      connectSrc: [
+        "'self'",
+        'https://api.telegram.org',
+        'https://raw.githubusercontent.com',
+        'https://tonapi.io',
+        'wss://bridge.tonapi.io',
+        'https://connect.tonhubapi.com',
+        'wss://bridge.tonhubapi.com',
+        // TonConnect bridge endpoints
+        'https://walletbot.me',
+        'https://sse-bridge.hot-labs.org',
+        'https://bridge.tonapi.io',
+        'wss://bridge.hot-labs.org', // ✅ ADD THIS - WebSocket version
+        // Wallet-specific endpoints
+        'https://app.tobiwallet.app',
+        'https://xtonwallet.com',
+        'https://tonhub.com',
+        'https://tonkeeper.com',
+        'https://wallet.ton.org',
+        // ✅ ADD THESE - Additional TonConnect bridges
+        'https://tonhubapi.com',
+        'wss://bridge.tonhubapi.com',
+        'https://bridge.tonconnect.org',
+        'wss://bridge.tonconnect.org',
+        // ✅ ADD THESE - Wallet discovery endpoints
+        'https://tonapi.io/v2',
+        'https://toncenter.com/api/v2',
+        'https://ton.org/api'
+      ],
+      frameSrc: [
+        "'self'",
+        'https://t.me',
+        'https://tonkeeper.com',
+        'https://wallet.ton.org',
+        'https://tonhub.com',
+        'https://app.tobiwallet.app',
+        'https://xtonwallet.com',
+        'https://telegram.org', // ✅ ADD THIS - For Telegram Web App
+        'https://web.telegram.org' // ✅ ADD THIS - For Telegram Web version
+      ],
+      imgSrc: [
+        "'self'",
+        'data:', // ✅ Important for base64 images
+        'blob:', // ✅ ADD THIS - For dynamically generated images
+        'https://res.cloudinary.com',
+        'https://static.okx.com',
+        'https://public.bnbstatic.com',
+        'https://wallet.tg',
+        'https://tonkeeper.com',
+        'https://static.mytonwallet.io',
+        'https://tonhub.com',
+        'https://raw.githubusercontent.com',
+        'https://fintopio.com',
+        'https://s.pvcliping.com',
+        'https://img.gatedataimg.com',
+        'https://img.bitgetimg.com',
+        'https://app.tobiwallet.app',
+        'https://xtonwallet.com',
+        'https://wallet.ton.org',
+        'https://chain-cdn.uxuy.com',
+        'https://hk.tpstatic.net',
+        'https://pub.tomo.inc/',
+        'https://cdn.mirailabs.co',
+        // ✅ ADD THESE - Additional wallet icons
+        'https://tonconnect.io',
+        'https://cdn.jsdelivr.net',
+        'https://avatars.githubusercontent.com'
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'", // ✅ ADD THIS - Required for TonConnect UI styles
+        'https://fonts.googleapis.com',
+        'https://cdn.jsdelivr.net',
+        'https://cdnjs.cloudflare.com'
+      ],
+      fontSrc: [
+        "'self'",
+        'https://fonts.gstatic.com',
+        'https://fonts.googleapis.com',
+        'data:' // ✅ ADD THIS - For embedded fonts
+      ],
+      workerSrc: [
+        "'self'",
+        'blob:' // ✅ ADD THIS - For web workers
+      ],
+      childSrc: [
+        "'self'",
+        'blob:' // ✅ ADD THIS - For iframe content
+      ],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+      // ✅ ADD THIS - Allows manifest files to be loaded
+      manifestSrc: ["'self'"]
+    },
+  })
+);
 
 
 app.use(cookieParser())
