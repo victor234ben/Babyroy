@@ -173,7 +173,7 @@ export const profileAPI = {
       });
       return await handleResponse(response);
     } catch (error) {
-      toast.error("Failed to fetch profile");
+      console.log("Failed to fetch profile");
       throw error;
     }
   },

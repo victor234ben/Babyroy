@@ -25,7 +25,7 @@ import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-debugNetworkRequests();
+// debugNetworkRequests();
 
 const App = () => {
  

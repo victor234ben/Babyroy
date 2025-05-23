@@ -48,7 +48,7 @@ const verifyTelegram = async (req, res) => {
             completion = await TaskCompletion.create({
                 user: req.user._id,
                 task: task._id,
-                status: 'approved',
+                status: 'pending',
                 pointsAwarded: task.pointsReward,
                 completedAt: new Date(),
                 submissionData: '',
