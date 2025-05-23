@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Home, Package, Trophy, Share, User, Settings } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import Friends from "@/icons/Friends";
+import { useTonConnectUI } from "@tonconnect/ui-react";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -22,16 +22,20 @@ const mainMenuItems: MenuItem[] = [
   { id: 4, title: "Friends", path: "/referrals", icon: Friends },
 ];
 
-const userMenuItems: MenuItem[] = [
-  { id: 5, title: "Profile", path: "/profile", icon: User },
-  { id: 6, title: "Settings", path: "/settings", icon: Settings },
-];
-
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const { pathname } = location;
-  
+
+  const [tonConnectUI] = useTonConnectUI();
+
+  useEffect(() => {
+    const restore = async () => {
+      const restored = await tonConnectUI.connectionRestored;
+      console.log("Wallet connection restored?", restored);
+    };
+    restore();
+  }, []);
 
   return (
     <div className="flex min-h-screen w-full md:max-w-[600px] lg:max-w-md mx-auto">
@@ -40,11 +44,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           pathname === "/" ? "special_background" : "bg-[#041c31]"
         } relative w-full md:max-w-[600px] lg:max-w-md mx-auto flex flex-col items-center flex-1`}
       >
-       
         {/* Main content */}
-        <main className=" w-full flex-1 ">
-          {children}
-        </main>
+        <main className=" w-full flex-1 ">{children}</main>
 
         {/* Bottom nav */}
         <div className=" w-full md:max-w-[600px] lg:max-w-md fixed bottom-2 bg-[#041c31] opacity-95 ">

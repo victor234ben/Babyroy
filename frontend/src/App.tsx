@@ -19,7 +19,7 @@ import NotFound from "./pages/NotFound";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import TelegramLogin from "./pages/TelegramLogin";
 import { debugNetworkRequests } from "./lib/debugNetworkRequests";
-import { TonConnectUIProvider, useTonConnectUI } from "@tonconnect/ui-react";
+import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { tonConnectConfig } from "./config/tonconnect";
 import { useEffect } from "react";
 
@@ -28,16 +28,7 @@ const queryClient = new QueryClient();
 debugNetworkRequests();
 
 const App = () => {
-  const [tonConnectUI] = useTonConnectUI();
-
-  useEffect(() => {
-    const restore = async () => {
-      const restored = await tonConnectUI.connectionRestored;
-      console.log("Wallet connection restored?", restored);
-    };
-    restore();
-  }, []);
-
+ 
   useEffect(() => {
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;

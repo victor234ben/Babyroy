@@ -134,13 +134,13 @@ const TasksPage = () => {
   ) => {
     if (action === "connect") {
       try {
-       let address: string | null = walletAddress;
-        
+        let address: string | null = walletAddress;
+
         // If not connected, trigger connection
         if (!isConnected) {
-          address = await connectWallet() as string;
+          address = (await connectWallet()) as string;
         }
-        
+
         // Send to backend
         await taskAPI.connectWallet(taskId, action, address);
         toast.success("Wallet connected successfully!");
