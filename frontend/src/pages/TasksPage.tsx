@@ -134,11 +134,11 @@ const TasksPage = () => {
   ) => {
     if (action === "connect") {
       try {
-       let address = walletAddress;
+       let address: string | null = walletAddress;
         
         // If not connected, trigger connection
         if (!isConnected) {
-          address = await connectWallet();
+          address = await connectWallet() as string;
         }
         
         // Send to backend
