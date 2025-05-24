@@ -115,8 +115,6 @@ const loginUser = async (req, res) => {
 const telegramLoginAndSignup = async (req, res) => {
   const { telegramId, first_name, last_name } = req.body;
 
-  console.log("Telegram login attempt:", telegramId, first_name, last_name);
-
   // Atomically find or insert user
   const user = await User.findOneAndUpdate(
     { telegramId },
