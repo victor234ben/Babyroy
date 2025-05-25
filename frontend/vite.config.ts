@@ -4,14 +4,15 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: './', // 👈 ADD THIS LINE
+  base: "./", // 👈 ADD THIS LINE
+  build: {
+    outDir: "dist",
+  },
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(),
-  ].filter(Boolean),
+  plugins: [react()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
