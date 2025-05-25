@@ -141,10 +141,20 @@ app.use(
 
 app.use(cookieParser())
 app.use(cors({
-  origin: ["http://localhost:8080",
-    "https://babyroy.vercel.app",],
+  origin: [
+    "http://localhost:8080",
+    "https://babyroy.vercel.app"
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
   credentials: true,
+  optionsSuccessStatus: 200
 }));
 
 // Rate limiting
