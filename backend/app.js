@@ -142,16 +142,7 @@ app.use(
 app.use(cookieParser())
 app.use(cors({
   origin: ["http://localhost:8080",
-    "https://babyroy.vercel.app/",
-    'https://t.me',
-    'https://web.telegram.org',
-    'https://telegram.org',
-    'https://tonkeeper.com',
-    'https://*.ton.org',
-    'https://connect.tonhubapi.com',
-    'https://bridge.tonapi.io',
-    'https://cdn.jsdelivr.net',
-    'https://unpkg.com'],
+    "https://babyroy.vercel.app",],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
